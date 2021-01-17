@@ -1,0 +1,21 @@
+tr{
+    line-height: 50px;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-thumb {
+    background: #3483eb;
+    border-radius: 6px;
+}
+
+.table{
+    overflow-x: hidden;
+}
+
+.chart-area {
+    max-width: 380px;
+    margin: 35px auto;
+    padding: 0;
+  }

@@ -1,0 +1,275 @@
+<div class="row mt-1" *ngIf="edit==false">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-9">
+            <h5 class="title">Kuruluş Bilgileri</h5>
+          </div>
+          <div class="col-md-3">
+            <div class="row">
+              <div class="col-md-6">
+                <a class="close align-right " mdbTooltip="Google Haritalar API Anahtarı" placement="top"
+                  style="vertical-align: top;" (click)="apiModal.show()">
+                  <mdb-icon fas icon="map-marker-alt"></mdb-icon>
+                </a>
+              </div>
+              <div class="col-md-6">
+                <a class="close " mdbTooltip="Bilgileri Düzenle" placement="top" style="vertical-align: top;"
+                  (click)="toggleEdit()">
+                  <mdb-icon fas icon="edit"></mdb-icon>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <form>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <label>Kısa Adı</label>
+                <input type="text" class="form-control" disabled placeholder="Dummy Şirketi"
+                  [(ngModel)]="temp.shortName" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+            <div class="col-md-7 px-1">
+              <div class="form-group">
+                <label>Ünvanı</label>
+                <input type="text" class="form-control" disabled placeholder="Dummy Şirketi San. ve Tic. A.Ş"
+                  [(ngModel)]="temp.title" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <h5 class="ml-2">İletişim Bilgileri</h5>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="mail">Mail Adresi</label>
+              <input type="text" class="form-control" disabled placeholder="info@domain.com" name="mail"
+                [(ngModel)]="temp.mail" [ngModelOptions]="{standalone:true}">
+            </div>
+            <div class="col-md-4">
+              <label for="phone">Telefon</label>
+              <input type="text" class="form-control" disabled placeholder="0324 333 3333" name="phone"
+                [(ngModel)]="temp.phone" [ngModelOptions]="{standalone:true}">
+            </div>
+            <div class="col-md-4">
+              <label for="fax">Fax</label>
+              <input type="text" class="form-control" disabled placeholder="0324 333 3334" name="fax"
+                [(ngModel)]="temp.fax" [ngModelOptions]="{standalone:true}">
+            </div>
+          </div>
+          <div class="row">
+            <h5 class="ml-2 mt-1">Adres Bilgileri</h5>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Addres</label>
+                <input type="text" class="form-control" disabled placeholder="Mahalle.. cadde.. sokak.. blok.. bina.."
+                  [(ngModel)]="temp.adress.openAdress" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 pr-1">
+              <div class="form-group">
+                <label>Şehir</label>
+                <input type="text" class="form-control" disabled placeholder="Şehir Adı"
+                  [(ngModel)]="temp.adress.province" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+            <div class="col-md-3 pr-1">
+              <div class="form-group">
+                <label>İlçe</label>
+                <input type="text" class="form-control" disabled placeholder="İlçe Adı"
+                  [(ngModel)]="temp.adress.district" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+            <div class="col-md-3 px-1">
+              <div class="form-group">
+                <label>Ülke</label>
+                <input type="text" class="form-control" disabled placeholder="Ülke" [(ngModel)]="temp.adress.country"
+                  [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+            <div class="col-md-3 pl-1">
+              <div class="form-group">
+                <label>Posta Kodu</label>
+                <input type="number" class="form-control" disabled placeholder="Posta Kodu"
+                  [(ngModel)]="temp.adress.postalCode" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!---->
+<div class="row mt-1" *ngIf="edit == true">
+  <div class="col-md-1"></div>
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <div class="row">
+          <div class="col-md-10">
+            <h5 class="title">Kuruluş Bilgileri</h5>
+          </div>
+          <div class="col-md-2">
+            <a class="close " style="vertical-align: top;" (click)="this.edit=true">
+              <mdb-icon fas icon="edit"></mdb-icon>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="card-body">
+        <form>
+          <div class="row">
+            <div class="col-md-5 pr-1">
+              <div class="form-group">
+                <label>Kısa Adı</label>
+                <input type="text" class="form-control" [ngClass]="{disabled:edit}" placeholder="Dummy Şirketi"
+                  [(ngModel)]="temp.shortName" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+            <div class="col-md-7 px-1">
+              <div class="form-group">
+                <label>Ünvanı</label>
+                <input type="text" class="form-control" placeholder="Dummy Şirketi San. ve Tic. A.Ş"
+                  [(ngModel)]="temp.title" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <h5 class="ml-2">İletişim Bilgileri</h5>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <label for="mail">Mail Adresi</label>
+              <input type="text" class="form-control" placeholder="info@domain.com" name="mail" [(ngModel)]="temp.mail"
+                [ngModelOptions]="{standalone:true}">
+            </div>
+            <div class="col-md-4">
+              <label for="phone">Telefon</label>
+              <input type="text" class="form-control" placeholder="0324 333 3333" name="phone" [(ngModel)]="temp.phone"
+                [ngModelOptions]="{standalone:true}">
+            </div>
+            <div class="col-md-4">
+              <label for="fax">Fax</label>
+              <input type="text" class="form-control" placeholder="0324 333 3334" name="fax" [(ngModel)]="temp.fax"
+                [ngModelOptions]="{standalone:true}">
+            </div>
+          </div>
+          <div class="row">
+            <h5 class="ml-2 mt-1">Adres Bilgileri</h5>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label>Addres</label>
+                <input type="text" class="form-control" placeholder="Mahalle.. cadde.. sokak.. blok.. bina.."
+                  [(ngModel)]="temp.adress.openAdress" [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3 pr-1">
+              <div class="form-group">
+                <label>Şehir</label>
+                <input type="text" class="form-control" placeholder="Şehir Adı" [(ngModel)]="temp.adress.province"
+                  [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+            <div class="col-md-3 pr-1">
+              <div class="form-group">
+                <label>İlçe</label>
+                <input type="text" class="form-control" placeholder="İlçe Adı" [(ngModel)]="temp.adress.district"
+                  [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+            <div class="col-md-3 px-1">
+              <div class="form-group">
+                <label>Ülke</label>
+                <input type="text" class="form-control" placeholder="Ülke" [(ngModel)]="temp.adress.country"
+                  [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+            <div class="col-md-3 pl-1">
+              <div class="form-group">
+                <label>Posta Kodu</label>
+                <input type="number" class="form-control" placeholder="Posta Kodu" [(ngModel)]="temp.adress.postalCode"
+                  [ngModelOptions]="{standalone:true}">
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-10"></div>
+            <div class="col-md-2">
+              <button class="btn btn-md btn-primary" (click)="updateInfo()" (click)="edit=false">
+                Güncelle
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Google Maps API Modal-->
+<div mdbModal #apiModal="mdb-modal" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close pull-right" (click)="apiModal.hide()">
+          <span aria-hidden="true">x</span>
+        </button>
+        <h5 class="modal-title w-100" style="text-align: center;">Google Haritaları Ayarlayın</h5>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-12 ml-1" *ngIf="temp.googleMaps.googleMapsActive==true" style="user-select: none;">
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" checked id="customSwitches" (click)="toggleMaps()">
+              <label class="custom-control-label" for="customSwitches">Google Haritalar Kullanılsın</label>
+            </div>
+          </div>
+          <div class="col-md-12 ml-1" *ngIf="temp.googleMaps.googleMapsActive==false" style="user-select: none;">
+            <div class="custom-control custom-switch">
+              <input type="checkbox" class="custom-control-input" id="customSwitches" (click)="toggleMaps()">
+              <label class="custom-control-label" for="customSwitches">Google Haritalar Kullanılsın</label>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <label for="lat">Enlem</label>
+            <input type="number" name="lat" class="form-control" [(ngModel)]="temp.googleMaps.lat"
+              [ngModelOptions]="{standalone:true}">
+          </div>
+          <div class="col-md-6">
+            <label for="lng">Boylam</label>
+            <input type="number" name="lng" class="form-control" [(ngModel)]="temp.googleMaps.lng"
+              [ngModelOptions]="{standalone:true}">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <label for="apiKey">API Anahtarı</label>
+            <input type="text" name="apiKey" class="form-control" [(ngModel)]="temp.googleMaps.googleMapAPIKey"
+              [ngModelOptions]="{standalone:true}">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" mdbBtn color="primary" (click)="updateInfo()" (click)="apiModal.hide()">Tamam</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!--Google Maps API Modal-->

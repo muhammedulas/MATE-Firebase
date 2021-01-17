@@ -1,0 +1,40 @@
+.scroll{
+    max-height: 500px;
+}
+
+.detail{
+    max-height: min-content;
+    white-space: nowrap;
+}
+
+.col-md-4{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.col-md-8{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.col-md-3{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.col-md-9{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-thumb {
+    background: #3483eb;
+    border-radius: 6px;
+}
+
+.alert{
+    user-select: none;
+}

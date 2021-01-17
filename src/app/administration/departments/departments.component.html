@@ -1,0 +1,262 @@
+<div class="table mt-1">
+  <div class="row">
+    <div class="col-md-4">
+      <button type="button" mdbBtn color="primary" style="border-radius: 5rem;" class="relative waves-light" size="sm"
+        (click)="createModal.show()" (click)="createDepForm.resetForm()" mdbWavesEffect>Departman Oluştur</button>
+    </div>
+    <div class="col-md-4 mr-5 ">
+      <!--Search Box-->
+      <form>
+        <div class="input-group no-border">
+          <input type="text" value="" class="form-control" placeholder="Departmanlar İçinde Ara.."
+            [(ngModel)]="searchInDeps" [ngModelOptions]="{standalone:true}">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <i class="now-ui-icons ui-1_zoom-bold"></i>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!--Search Box-->
+    </div>
+  </div>
+  <table class="table table-hover ">
+    <thead class="black white-text">
+      <th>Departman Adı</th>
+      <th>Departman Tanımı</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let dep of depList | depSearch:searchInDeps" class="tableRow">
+        <td mdbTooltip="Düzenlemek İçin Çift Tıklayın" placement="top" (dblclick)="editModal.show()">
+          {{dep.department_name}}</td>
+        <td class="tableCol" mdbTooltip="{{dep.department_def}}" (dblclick)="editModal.show()">{{dep.department_def}}
+        </td>
+        <td hidden id="dep_key" (dblclick)="editModal.show()">{{dep.department_key}}</td>
+        <td class="ml-3 ">
+          <a class="btn btn-danger btn-sm mr-1" style="border-radius: 50em;" mdbWavesEffect (click)="deleteModal.show()"
+            mdbTooltip="Departmanı Sil" placement="top">
+            <mdb-icon fas icon="building"></mdb-icon>
+          </a>
+          <a class="btn btn-info btn-sm" style="border-radius: 50em;" mdbTooltip="Ekipler" placement="top"
+            mdbWavesEffect (click)="relatedTeamsModal.show()">
+            <mdb-icon fas icon="users"></mdb-icon>
+          </a>
+        </td>
+        <div>
+          <!--Related Teams Modal-->
+          <div mdbModal #relatedTeamsModal class="modal fade" tabindex="1" role="dialog"
+            aria-labelledby="RelatedTeamsModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="relatedTeamsModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" style="text-align: center;" id="relatedTeamsLabel"
+                    style="text-align: center;">
+                    {{dep.department_name}} Departmanına Bağlı
+                    Ekipler</h4>
+                </div>
+                <div class="modal-body">
+                  <!--Search Teams (In Modal)-->
+                  <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                      <form>
+                        <div class="input-group no-border">
+                          <input type="text" value="" class="form-control" placeholder="Ekip Ara.."
+                            [(ngModel)]="searchTeams" [ngModelOptions]="{standalone:true}">
+                          <div class="input-group-append">
+                            <div class="input-group-text">
+                              <i class="now-ui-icons ui-1_zoom-bold"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    <div class="col-md-3"></div>
+                  </div>
+                  <!--Search Teams (In Modal)-->
+                  <div class="row">
+                    <div class="col-md-5">
+                      <div class="card-header">
+                        <strong>Departmana Dahil Olmayan Ekipler</strong>
+                      </div>
+                      <div class="card-body teams-list">
+                        <table class="table table-hover">
+                          <thead>
+                          </thead>
+                          <tbody>
+                            <tr *ngFor="let team of teamsList|depFilter|orderBy:'team_name'|teamSearch:searchTeams ">
+                              <td style="text-align: right;">{{team.team_name}}</td>
+                              <td><a class="btn btn-success btn-sm"
+                                  (click)="connectTeamToDep(team.team_key,dep.department_key,dep.department_name)">
+                                  <mdb-icon fas icon="arrow-right"></mdb-icon>
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-5">
+                      <div class="card-header">
+                        <strong>Departmana Dahil Olan Ekipler</strong>
+                      </div>
+                      <div class="card-body teams-list">
+                        <table class="table table-hover">
+                          <thead>
+                          </thead>
+                          <tbody>
+                            <tr
+                              *ngFor="let team of teamsList|depFilter:dep.department_key|orderBy:'team_name'|teamSearch:searchTeams">
+                              <td><a class="btn btn-danger btn-sm" (click)="disconnectTeamFromDep(team.team_key)">
+                                  <mdb-icon fas icon="arrow-left"></mdb-icon>
+                                </a></td>
+                              <td style="text-align: left;">{{team.team_name}}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button class="btn btn-primary" (click)="relatedTeamsModal.hide()">Tamam</button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <!--Related Teams Modal-->
+          <!-- Edit Dep Modal -->
+          <div mdbModal #editModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="myBasicModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="editModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Departmanı Düzenle</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="card-header"></div>
+                  <!-- Form inside Modal -->
+                  <div class="card-body">
+                    <ng-form #editDepForm="ngForm">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label for="DepName">Departman Adı</label>
+                          <input type="text" required name="DepName" class="form-control"
+                            value="{{dep.department_name}}" [(ngModel)]="dep.department_name">
+                        </div>
+                        <div class="col-md-4">
+                          <label for="DepDef">Departman Tanımı</label>
+                          <input type="text" required name="DepDef" class="form-control" value="{{dep.department_def}}"
+                            [(ngModel)]="dep.department_def">
+                        </div>
+                        <div class="col-md-4">
+                          <label for="DepKey">Referans Anahtarı</label>
+                          <input type="text" disabled name="DepKey" class="form-control" value="{{dep.department_key}}">
+                        </div>
+                      </div>
+                    </ng-form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                    (click)="editModal.hide()" mdbWavesEffect>Vazgeç</button>
+                  <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                    (click)="editModal.hide()" (click)="updateDep(dep)"
+                    [ngClass]="{disabled:!editDepForm.valid}">Kaydet</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Edit Dep Modal -->
+
+          <!--Delete Dep Modal-->
+          <div mdbModal #deleteModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="myBasicModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Departmanı Sil</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="card-header"></div>
+                  <div class="card-body">
+                    <span>
+                      <h5><strong>{{dep.department_name}}</strong> Silinecektir!</h5>
+                    </span>
+                    <label class="text-danger" for="okBtn"
+                      *ngIf="(teamsList|depFilter:dep.department_key).length>0"><b>Uyarı:</b> Silinecek Departmana Bağlı
+                      Ekip Olmamalıdır!</label>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                    (click)="deleteModal.hide()" mdbWavesEffect>Vazgeç</button>
+                  <button type="button" name="okBtn" type="reset" mdbBtn color="primary" class="relative waves-light"
+                    mdbWavesEffect (click)="deleteModal.hide()" (click)="deleteDep(dep.department_key)"
+                    [ngClass]="{disabled: (teamsList|depFilter:dep.department_key).length>0}">Onayla</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Delete Dep Modal-->
+        </div>
+      </tr>
+    </tbody>
+  </table>
+  <!-- Create Dep Modal -->
+  <div mdbModal #createModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-notify modal-info" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="createModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Departman Oluştur</h4>
+        </div>
+        <div class="modal-body">
+          <div class="card-header"></div>
+          <!-- Form inside Modal -->
+          <div class="card-body">
+            <ng-form #createDepForm="ngForm">
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="DepName">Departman Adı</label>
+                  <input type="text" required name="DepName" class="form-control" [(ngModel)]="tempDep.department_name">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="DepDef">Departman Tanımı</label>
+                  <textarea type="text" rows="5" wrap="hard" placeholder="..." type="text" required name="DepDef"
+                    class="form-control" [(ngModel)]="tempDep.department_def"></textarea>
+                </div>
+              </div>
+            </ng-form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+            (click)="createModal.hide()" mdbWavesEffect>Vazgeç</button>
+          <button type="submit" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+            (click)="createModal.hide()" (click)="createDepartment(tempDep)"
+            [ngClass]="{disabled: createDepForm.valid === false}">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Create Dep Modal -->
+
+
+</div>

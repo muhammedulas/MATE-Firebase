@@ -1,0 +1,130 @@
+<div class="panel-header panel-header-sm">
+</div>
+<div class="main-content">
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5 class="title">Profil Bilgileri</h5>
+        </div>
+        <div class="card-body">
+          <form>
+            <div class="row">
+              <div class="col-md-5 pr-1">
+                <div class="form-group">
+                  <label>Şirket</label>
+                  <input type="text" class="form-control" disabled="" placeholder="Company" value="">
+                </div>
+              </div>
+              <div class="col-md-3 px-1">
+                <div class="form-group">
+                  <label>Kullanıcı Adı</label>
+                  <input type="text" class="form-control" disabled="" placeholder="Username"
+                    value="{{profile.displayName}}">
+                </div>
+              </div>
+              <div class="col-md-4 pl-1">
+                <div class="form-group">
+                  <label for="email">Mail Adresi </label>
+                  <input name="email" id="email" type="email" class="form-control" disabled="" value="{{profile.mail}}">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-6 pr-1">
+                <div class="form-group">
+                  <label>Adı</label>
+                  <input type="text" class="form-control" disabled="" placeholder="Company"
+                    value="{{profile.firstName}}">
+                </div>
+              </div>
+              <div class="col-md-6 pl-1">
+                <div class="form-group">
+                  <label>Soyadı</label>
+                  <input type="text" class="form-control" disabled="" placeholder="Last Name" value="Andrew"
+                    value="{{profile.lastName}}">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Addres</label>
+                  <input type="text" class="form-control" disabled="" placeholder="Home Address"
+                    value="Bld Mihail Kogalniceanu, nr. 8 Bl 1, Sc 1, Ap 09" value="{{profile.adress.openAdress}}">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4 pr-1">
+                <div class="form-group">
+                  <label>Şehir</label>
+                  <input type="text" class="form-control" disabled="" placeholder="City"
+                    value="{{profile.adress.province}}">
+                </div>
+              </div>
+              <div class="col-md-4 px-1">
+                <div class="form-group">
+                  <label>Ülke</label>
+                  <input type="text" class="form-control" disabled="" placeholder="Country"
+                    value="{{profile.adress.country}}">
+                </div>
+              </div>
+              <div class="col-md-4 pl-1">
+                <div class="form-group">
+                  <label>Posta Kodu</label>
+                  <input type="number" class="form-control" disabled="" placeholder="ZIP Code"
+                    value="{{profile.adress.postalCode}}">
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <div class="form-group">
+                  <label>Hakkında</label>
+                  <textarea rows="4" cols="80" class="form-control" placeholder="Buraya kendi hakkında bir şeyler yaz.."
+                    [(ngModel)]="profile.additionalInfo" [ngModelOptions]="{standalone:true}"></textarea>
+                </div>
+              </div>
+            <div class="row">
+              <div class="col-md-12">
+                <a class="btn btn-sm btn-primary ml-2" (click)="setInfo(profile.additionalInfo)">Güncelle</a>
+              </div>
+            </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card card-user">
+        <a class="image">
+          <img src="../assets/img/bg5.jpg" alt="...">
+        </a>
+        <div class="card-body">
+          <div class="author">
+            <a>
+              <img class="avatar border-gray" src="../assets/img/mike.jpg" alt="..."  >
+              <h5 class="title">{{profile.displayName}}</h5>
+            </a>
+          </div>
+          <p class="description text-center">
+            {{profile.additionalInfo}}
+          </p>
+        </div>
+        <hr>
+        <div class="button-container">
+          <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+            <i class="fab fa-facebook-f"></i>
+          </button>
+          <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+            <i class="fab fa-twitter"></i>
+          </button>
+          <button href="#" class="btn btn-neutral btn-icon btn-round btn-lg">
+            <i class="fab fa-google-plus-g"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

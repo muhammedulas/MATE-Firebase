@@ -1,0 +1,382 @@
+<div class="table mt-1">
+  <div class="row">
+    <div class="col-md-4">
+      <button type="button" mdbBtn color="primary" style="border-radius: 5rem;" class="relative waves-light" size="sm"
+        (click)="createModal.show()" (click)="createTeamForm.resetForm()" mdbWavesEffect>Ekip Oluştur</button>
+    </div>
+    <div class="col-md-4 mr-5 ">
+      <!--Search Box-->
+      <form>
+        <div class="input-group no-border">
+          <input type="text" value="" class="form-control" placeholder="Ekipler İçinde Ara.."
+            [(ngModel)]="searchInTeams" [ngModelOptions]="{standalone:true}">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <i class="now-ui-icons ui-1_zoom-bold"></i>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!--Search Box-->
+    </div>
+  </div>
+  <table class="table table-hover ">
+    <thead class="black white-text">
+      <th class="tableHeader">Ekip Adı</th>
+      <th class="tableHeader">Ekip Tanımı</th>
+      <th class="tableHeader" >Bağlı Olduğu Departman</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let team of teamList|teamSearch:searchInTeams" class="tableRow">
+        <td mdbTooltip="Düzenlemek İçin Çift Tıklayın" placement="top" (dblclick)="editModal.show()">{{team.team_name}}
+        </td>
+        <td style="height: 50px; max-height: 50px;" class="tableCol" mdbTooltip="{{team.team_def}}"
+          (dblclick)="editModal.show()">{{team.team_def}}
+        </td>
+        <td (dblclick)="editModal.show()">{{team.relatedDepName}}</td>
+        <td hidden id="team_key">{{team.team_key}}</td>
+        <td >
+          <a class="btn btn-danger btn-sm mr-1" style="border-radius: 50em;" mdbWavesEffect (click)="deleteModal.show()"
+            mdbTooltip="Ekibi Sil" placement="top">
+            <mdb-icon fas icon="times"></mdb-icon>
+          </a>
+          <a class="btn btn-info btn-sm" style="border-radius: 50em;" mdbWavesEffect (click)="membersModal.show()"
+            mdbTooltip="Ekip Üyeleri" placement="top">
+            <mdb-icon fas icon="users"></mdb-icon>
+          </a>
+        </td>
+        <div>
+          <!-- Edit Team Modal -->
+          <div mdbModal #editModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="myBasicModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-md modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="editModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" id="myModalLabel" style="text-align: center;">Ekibi Düzenle</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="card-header"></div>
+                  <!-- Form inside Modal -->
+                  <div class="card-body">
+                    <ng-form #editTeamForm="ngForm">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label for="TeamName">Ekip Adı</label>
+                          <input type="text" required name="TeamName" class="form-control" value="{{team.team_name}}"
+                            [(ngModel)]="team.team_name">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label for="TeamDef">Ekip Tanımı</label>
+                          <input type="text" required name="TeamDef" class="form-control" value="{{team.team_def}}"
+                            [(ngModel)]="team.team_def">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label for="TeamKey">Referans Anahtarı</label>
+                          <input type="text" disabled name="TeamKey" class="form-control" value="{{team.team_key}}"
+                            [(ngModel)]="team.team_key">
+                        </div>
+                      </div>
+                    </ng-form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                    (click)="editModal.hide()" mdbWavesEffect>Vazgeç</button>
+                  <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                    (click)="editModal.hide()" (click)="updateTeam(team)"
+                    [ngClass]="{disabled:!editTeamForm.valid}">Kaydet</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Edit Team Modal -->
+
+          <!--Members Modal-->
+          <div mdbModal #membersModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="myBasicModalLabel" aria-hidden="true">
+            <div class="modal-dialog  modal-lg modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="membersModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" id="myModalLabel" style="text-align: center;">{{team.team_name}} Üyeleri
+                  </h4>
+                </div>
+                <div class="modal-body">
+                  <div class="card-header"></div>
+                  <div class="card-body">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <a class="btn btn-info btn-sm" style="border-radius: 6rem;" mdbTooltip="Üye Ekle"
+                          placement="top" (click)="addUsersModal.show()">
+                          <mdb-icon fas icon="user-plus"></mdb-icon>
+                        </a>
+                        <a class="btn btn-success btn-sm" style="border-radius: 6rem;" mdbTooltip="Yönetici Ekle"
+                          placement="top" (click)="addManagersModal.show()">
+                          <mdb-icon fas icon="user-plus"></mdb-icon>
+                        </a>
+                      </div>
+                      <div class="col-md-6">
+                        <form>
+                          <div class="input-group no-border">
+                            <input type="text" value="" class="form-control" placeholder="Üyeleri Ara.."
+                              [(ngModel)]="searchUsers" [ngModelOptions]="{standalone:true}">
+                            <div class="input-group-append">
+                              <div class="input-group-text">
+                                <i class="now-ui-icons ui-1_zoom-bold"></i>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <table class="table table-hover users-list">
+                        <thead>
+                          <th>Kullanıcı Adı</th>
+                          <th>Mail Adresi</th>
+                          <th>Telefon Numarası</th>
+                          <th>Rolü</th>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of availableUsers|filterByTeam:team.team_key|searchFilter:searchUsers ">
+                            <td>{{user.displayName}}</td>
+                            <td>{{user.mail}}</td>
+                            <td>{{user.phone}}</td>
+                            <td>{{user.role}}</td>
+                            <td>
+                              <a class="btn btn-danger btn-sm" style="border-radius: 6rem;" mdbTooltip="Ekipten Çıkar"
+                                placement="top" (click)="dismissUserFromTeam(user)">
+                                <mdb-icon fas icon="user-times">
+                                </mdb-icon>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                    (click)="membersModal.hide()">Tamam</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!--Add Members Modal-->
+          <div mdbModal #addUsersModal="mdb-modal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="addUsersModal" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="addUsersModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" id="myModalLabel" style="text-align: center;">Kullanıcıyı Ekibe Al</h4>
+                </div>
+                <div class="modal-body ">
+                  <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                      <form>
+                        <div class="input-group no-border">
+                          <input type="text" value="" class="form-control" placeholder="Kullanıcı Ara.."
+                            [(ngModel)]="searchAvailableUsers" [ngModelOptions]="{standalone:true}">
+                          <div class="input-group-append">
+                            <div class="input-group-text">
+                              <i class="now-ui-icons ui-1_zoom-bold"></i>
+                            </div>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <table class="table table-hover users-list">
+                        <thead>
+                          <th>Kullanıcı Adı</th>
+                          <th>Mail Adresi</th>
+                          <th>Telefon Numarası</th>
+                        </thead>
+                        <tbody>
+                          <tr *ngFor="let user of availableUsers|filterByTeam|searchFilter:searchAvailableUsers">
+                            <td>{{user.displayName}}</td>
+                            <td>{{user.mail}}</td>
+                            <td>{{user.phone}}</td>
+                            <td style="text-align: right;">
+                              <a class="btn btn-success btn-sm" style="border-radius: 6rem;" mdbTooltip="Ekle"
+                                placement="top" (click)="connectUserToTeam(team.team_key,team.team_name,user,'Üye')">
+                                <mdb-icon fas icon="plus"></mdb-icon>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                    (click)="addUsersModal.hide()">Geri</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Add Members Modal-->
+
+        <!--Add Managers Modal-->
+        <div mdbModal #addManagersModal="mdb-modal" class="modal fade" tabindex="-1" role="dialog"
+          aria-labelledby="addManagersModal" aria-hidden="true">
+          <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close pull-right" aria-label="Close" (click)="addManagersModal.hide()">
+                  <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title w-100" id="myModalLabel" style="text-align: center;">Kullanıcıyı Ekibe Al</h4>
+              </div>
+              <div class="modal-body ">
+                <div class="row">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-6">
+                    <form>
+                      <div class="input-group no-border">
+                        <input type="text" value="" class="form-control" placeholder="Kullanıcı Ara.."
+                          [(ngModel)]="searchAvailableUsers" [ngModelOptions]="{standalone:true}">
+                        <div class="input-group-append">
+                          <div class="input-group-text">
+                            <i class="now-ui-icons ui-1_zoom-bold"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <table class="table table-hover users-list">
+                      <thead>
+                        <th>Kullanıcı Adı</th>
+                        <th>Mail Adresi</th>
+                        <th>Telefon Numarası</th>
+                      </thead>
+                      <tbody>
+                        <tr *ngFor="let user of availableUsers|filterByTeam|searchFilter:searchAvailableUsers ">
+                          <td>{{user.displayName}}</td>
+                          <td>{{user.mail}}</td>
+                          <td>{{user.phone}}</td>
+                          <td>
+                            <a class="btn btn-success btn-sm" style="border-radius: 6rem;" mdbTooltip="Ekle"
+                              placement="top"
+                              (click)="connectUserToTeam(team.team_key,team.team_name,user,'Ekip Lideri')">
+                              <mdb-icon fas icon="plus"></mdb-icon>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                  (click)="addManagersModal.hide()">Geri</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Add Managers Modal-->
+
+        <!--Members Modal-->
+
+        <!--Delete Team Modal-->
+        <div mdbModal #deleteModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+          aria-labelledby="myBasicModalLabel" aria-hidden="true">
+          <div class="modal-dialog  modal-md modal-notify modal-info" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+                  <span aria-hidden="true">×</span>
+                </button>
+                <h4 class="modal-title w-100" id="myModalLabel" style="text-align: center;">Ekibi Sil</h4>
+              </div>
+              <div class="modal-body">
+                <div class="card-header"></div>
+                <div class="card-body">
+                  <span>
+                    <h5><strong>{{team.team_name}}</strong> Silinecektir!</h5>
+                  </span>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                  (click)="deleteModal.hide()" mdbWavesEffect>Vazgeç</button>
+                <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                  (click)="deleteModal.hide()" (click)="deleteTeam(team.team_key)">Onayla</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--Delete Team Modal-->
+      </tr>
+    </tbody>
+  </table>
+  <!-- Create Team Modal -->
+  <div mdbModal #createModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-md modal-notify modal-info" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="createModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" id="myModalLabel" style="text-align: center;">Ekip Oluştur</h4>
+        </div>
+        <div class="modal-body">
+          <div class="card-header"></div>
+          <div class="card-body">
+            <ng-form #createTeamForm="ngForm">
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="TeamName">Ekip Adı</label>
+                  <input type="text" required name="TeamName" class="form-control" [(ngModel)]="tempTeam.team_name">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="TeamDef">Ekip Tanımı</label>
+                  <textarea type="text" rows="5" wrap="hard" type="text" required name="TeamDef" class="form-control"
+                    [(ngModel)]="tempTeam.team_def"></textarea>
+                </div>
+              </div>
+            </ng-form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+            (click)="createModal.hide()" mdbWavesEffect>Vazgeç</button>
+          <button type="submit" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+            (click)="createModal.hide()" (click)="createTeam(tempTeam)"
+            [ngClass]="{disabled: createTeamForm.valid === false}">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Create Team Modal -->
+
+
+</div>

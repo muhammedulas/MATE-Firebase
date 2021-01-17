@@ -1,0 +1,207 @@
+<div class="panel-header panel-header-lg">
+  <canvas baseChart id="bigDashboardChart" [datasets]="lineBigDashboardChartData" [labels]="lineBigDashboardChartLabels"
+    [colors]="lineBigDashboardChartColors" [options]="lineBigDashboardChartOptions"
+    [chartType]="lineBigDashboardChartType" (chartHover)="chartHovered($event)"
+    (chartClick)="chartClicked($event)"></canvas>
+</div>
+
+<div class="main-content">
+  <div class="row">
+    <div class="col-lg-4">
+      <div class="card card-chart">
+        <div class="card-header">
+          <h5 class="card-category">Görev Tamamlama Yüzdesi</h5>
+
+        </div>
+        <div class="card-body">
+
+            <apx-chart
+            [series]="firstChartOptions.series"
+            [chart]="firstChartOptions.chart"
+            [plotOptions]="firstChartOptions.plotOptions"
+            [labels]="firstChartOptions.labels"
+          ></apx-chart>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="card card-chart">
+        <div class="card-header">
+          <h5 class="card-category">Başarı Oranı Tablosu</h5>
+        </div>
+        <div class="card-body">
+          <div class="chart-area" >
+            <apx-chart
+            [colors]="[ '#03fc6f','#fc0303','#0367fc']"
+            [series]="secondChartOptions.series"
+            [labels]="['Başarılı','Başarısız','İptal']"
+            [chart]="secondChartOptions.chart"
+            [responsive]="secondChartOptions.responsive"
+            >
+            </apx-chart>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            <i class="now-ui-icons arrows-1_refresh-69"></i> Just Updated
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 col-md-6">
+      <div class="card card-chart">
+        <div class="card-header">
+          <h5 class="card-category">Ekip Başarı Oranı Karşılaştırması</h5>
+        </div>
+        <div class="card-body" >
+          <div >
+            <apx-chart 
+            [series]="thirdChartOptions.series"
+            [chart]="thirdChartOptions.chart"
+            [dataLabels]="thirdChartOptions.dataLabels"
+            [plotOptions]="thirdChartOptions.plotOptions"
+            [xaxis]="thirdChartOptions.xaxis"
+            [yaxis]="thirdChartOptions.yaxis"
+          ></apx-chart>
+          </div>
+        </div>
+        <div class="card-footer">
+          <div class="stats">
+            
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6" style="height: 600px;">
+      <div class="card  card-tasks" style="height: 100%">
+        <div class="card-header ">
+          <div class="row">
+            <h5 class="card-category">Kişisel Görevlerim</h5>
+          </div>
+          <div class="row">
+            <div class="col-md-9">
+              <button class="btn btn-sm btn-primary" *ngIf="selectedTodos==false"
+                (click)="selectedTodos=true">Tamamlananları Göster
+              </button>
+              <button class="btn btn-sm btn-danger" *ngIf="selectedTodos==true"
+                (click)="selectedTodos=false">Tamamlanmamışları Göster</button>
+            </div>
+            <div class="col-md-3 text-right">
+              <button class="btn btn-success btn-sm" (click)="todoModal.show()">Ekle</button>
+
+            </div>
+          </div>
+
+        </div>
+        <div class="card-body ps-child " style="height: 500px; overflow: scroll; ">
+          <table class="table table-hover" *ngIf="selectedTodos==false">
+            <thead></thead>
+            <tbody style="max-height: 600px; ">
+              <tr *ngFor="let todo of todos|searchTodos:search">
+                <td *ngIf="todo.completed==false">
+                  {{todo.description}}
+                </td>
+                <td class="text-right" *ngIf="todo.completed==false">
+                  <a class="btn btn-sm btn-primary" (click)="updateToCompleted(todo)">
+                    <i class="now-ui-icons ui-1_check"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table class="table table-hover" *ngIf="selectedTodos==true">
+            <thead></thead>
+            <tbody>
+              <tr *ngFor="let todo of todos|searchTodos:search">
+                <td *ngIf="todo.completed==true">
+                  {{todo.description}}
+                </td>
+                <td class="text-right" *ngIf="todo.completed==true">
+                  <a class="btn btn-sm btn-danger" (click)="updateFromCompleted(todo)">
+                    <i class="now-ui-icons loader_refresh"></i>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!-- <div class="card-footer ">
+          <hr>
+          <div class="stats">
+            <i class="now-ui-icons loader_refresh spin"></i>
+          </div>
+        </div> -->
+      </div>
+    </div>
+    <div class="col-md-6" style="height: 600px; ">
+      <div class="card" style="height: 100%;">
+        <div class="card-header">
+          <h5 class="card-category">Ekip Arkadaşlarım</h5>
+          <h4 class="card-title"> </h4>
+        </div>
+        <div class="card-body" style="height: 500;;overflow: scroll;">
+          <div class="table-responsive">
+            <table class="table">
+              <thead class=" text-primary">
+                <th>
+                  Kullanıcı Adı
+                </th>
+                <th>
+                  Mail Adresi
+                </th>
+                <th>
+                  Telefon Numarası
+                </th>
+                <th class="text-right">
+                  Rolü
+                </th>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of teamMembers|searhTeammates:search">
+                  <td>{{user.displayName}}</td>
+                  <td>{{user.mail}}</td>
+                  <td>{{user.phone}}</td>
+                  <td>{{user.role}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--Add Todo Modal-->
+<div mdbModal #todoModal="mdbModal" class="modal fade" role="dialog" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-notify modal-md modal-info">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title w-100">Yapılacaklar Listesine Ekle</h5>
+      </div>
+      <div class="modal-body">
+        <ng-form>
+          <label for="desc">Açıklama</label>
+          <input type="text" name="desc" class="form-control" [(ngModel)]="tempTodo.description">
+        </ng-form>
+      </div>
+      <div class="modal-footer">
+        <button mdbBtn color="primary" (click)="todoModal.hide()">
+          Vazgeç
+        </button>
+        <button mdbBtn color="primary" (click)="addTodoItem()" (click)="todoModal.hide()">
+          Ekle
+        </button>
+      </div>
+    </div>
+  </div>
+
+
+</div>

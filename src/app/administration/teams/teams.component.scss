@@ -1,0 +1,30 @@
+td {
+    max-width: 350px;
+    overflow: hidden;
+    text-align: center;
+}
+
+tr {
+    line-height: 45px;
+    white-space: nowrap;
+    overflow: hidden;
+    user-select: none;
+}
+
+.users-list {
+    max-height: 400px;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-thumb {
+    background: #3483eb;
+    border-radius: 6px;
+}
+
+th{
+    text-align: center;
+}

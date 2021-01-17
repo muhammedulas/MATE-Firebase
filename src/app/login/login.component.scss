@@ -1,0 +1,17 @@
+@import '~firebaseui/dist/firebaseui.css';
+
+.login-container{
+    width: 100%;
+    height: 88%;
+    vertical-align: middle;
+    align-items: center;
+    align-content: center;
+}
+
+.login-ui-container{
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}

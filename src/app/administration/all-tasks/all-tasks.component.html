@@ -1,0 +1,372 @@
+<div class="table mt-1">
+  <div class="row">
+    <div class="col-md-4">
+      <button type="button" mdbBtn color="primary" style="border-radius: 5rem;" class="relative waves-light" size="sm"
+        (click)="createModal.show()" (click)="resetTemp()" mdbWavesEffect>Yeni Görev</button>
+    </div>
+    <div class="col-md-4 mr-5 ">
+      <!--Search Box-->
+      <form>
+        <div class="input-group no-border">
+          <input type="text" value="" class="form-control" placeholder="Görevler İçinde Ara.."
+            [(ngModel)]="searchBoxValue" [ngModelOptions]="{standalone:true}">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <i class="now-ui-icons ui-1_zoom-bold"></i>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!--Search Box-->
+    </div>
+  </div>
+  <table class="table table-hover ">
+    <thead class="black white-text">
+      <th>Görev Başlığı</th>
+      <th>Açıklaması</th>
+      <th>Oluşturan</th>
+      <th>Kime</th>
+      <th>Oluşturma Tarihi</th>
+      <th>İstenen Tarih</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let task of tasksList|taskSearch:searchBoxValue" (dblclick)="editModal.show()" style="user-select: none; ">
+        <td mdbTooltip={{task.header}} placement="top">{{task.header}}</td>
+        <td mdbTooltip={{task.description}} placement="top">{{task.description}}</td>
+        <td>{{task.assignedBy_name}}</td>
+        <td>{{task.assignedTo_name}}</td>
+        <td>{{task.createdAt|date:'dd/mm/yyyy hh:mm'}}</td>
+        <td>{{task.deadline|date:'dd/mm/yyyy hh:mm' }}</td>
+        <td>
+          <a class="btn btn-danger btn-sm" style="border-radius: 50em;" mdbWavesEffect (click)="deleteModal.show()"
+            mdbTooltip="Görevi Sil" placement="top">
+            <mdb-icon fas icon="times"></mdb-icon>
+          </a>
+        </td>
+        <div>
+          <!-- Edit task Modal -->
+          <div mdbModal #editModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="myBasicModalLabel" aria-hidden="true" style="max-height: 800px;">
+            <div class="modal-dialog modal-full-height modal-top" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="editModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Görevi Düzenle</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="card-header"></div>
+                  <!-- Form inside Modal -->
+                  <div class="card-body">
+                    <ng-form #editTaskForm="ngForm">
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label for="header">Başlık</label>
+                          <input type="text" required name="header" class="form-control" value="{{task.header}}" [(ngModel)]="task.header">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label for="description">Açıklama</label>
+                          <input name="description" required class="form-control" cols="30" rows="10"
+                            value="{{task.description}}" [(ngModel)]="task.description">
+                        </div>
+                        <div class="col-md-4">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="btn-group" mdbDropdown>
+                            <form>
+                              <div class="input-group no-border">
+                                <input type="text" value="" class="form-control" name="assignedBy"                                 
+                                placeholder="Görevi Oluşturan" value="{{task.assignedBy_name}}">
+                                <div class="input-group-append">
+                                  <div class="input-group-text">
+                                    <a mdbDropdownToggle type="button" color="primary" class=" waves-light"
+                                      mdbWavesEffect><i class="now-ui-icons users_single-02"></i></a>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <div class="dropdown-menu dropdown-dark">
+                              <a class="dropdown-item" *ngFor="let user of users|searchFilter:searchUsers1"
+                                (click)="task.assignedBy = user.key"
+                                (click)="task.assignedBy_name = user.displayName">{{user.displayName}}</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="btn-group" mdbDropdown>
+                            <form>
+                              <div class="input-group no-border">
+                                <input type="text" value="" class="form-control" name="assignedTo"                                 
+                                placeholder="Görevin Alıcısı" value="{{task.assignedTo_name}}">
+                                <div class="input-group-append">
+                                  <div class="input-group-text">
+                                    <a mdbDropdownToggle type="button" color="primary" class=" waves-light"
+                                      mdbWavesEffect><i class="now-ui-icons users_single-02"></i></a>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                            <div class="dropdown-menu dropdown-dark">
+                              <a class="dropdown-item" *ngFor="let user of users|searchFilter:searchUsers1"
+                                (click)="task.assignedTo = user.key"
+                                (click)="task.assignedTo_name = user.displayName">{{user.displayName}}</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="createdAt">Oluşturma Zamanı</label>
+                          <input type="datetime-local" required name="createdAt" class="form-control"
+                            value="{{task.createdAt}}" [(ngModel)]="task.createdAt">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="btn-group" mdbDropdown>
+                            <a mdbDropdownToggle type="button" class="dropdown-toggle waves-light ">
+                              Durum
+                            </a>
+                            <div class="dropdown-menu dropdown-primary">
+                              <a class="dropdown-item" (click)="task.status='Beklemede'">Beklemede</a>
+                              <a class="dropdown-item" (click)="task.status='Devam Ediyor'">Devam Ediyor</a>
+                              <a class="dropdown-item" (click)="task.status='Kapandı'">Kapandı</a>
+                            </div>
+                          </div>
+                          <input type="text" class="form-control" value="{{task.status}}" disabled>
+                        </div>
+                        <div class="col-md-4">
+                          <div class="btn-group" mdbDropdown>
+                            <a mdbDropdownToggle type="button" class="dropdown-toggle waves-light "
+                              *ngIf="task.status=='Kapandı'">
+                              Sonuç
+                            </a>
+                            <div class="dropdown-menu dropdown-primary">
+                              <a class="dropdown-item" (click)="task.result='Başarılı'">Başarılı</a>
+                              <a class="dropdown-item" (click)="task.result='Başarısız'">Başarısız</a>
+                              <a class="dropdown-item" (click)="task.result='İptal'">İptal</a>
+                            </div>
+                          </div>
+                          <input type="text" class="form-control" value="{{task.result}}" disabled>
+                        </div>
+                        <div class="col-md-4">
+                          <label for="modifiedAt">Değiştirme Zamanı</label>
+                          <input type="datetime-local" required name="modifiedAt" class="form-control"
+                            value="{{task.modifiedAt}}" [(ngModel)]="task.modifiedAt">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                          <label for="deadline">İstenen Zaman</label>
+                          <input type="datetime-local" required name="deadline" class="form-control "
+                            value="{{task.deadline}}" [(ngModel)]="task.deadline">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <label for="statusDescription">Durum Açıklaması</label>
+                          <input name="statusDescription" class="form-control" cols="30" rows="10"
+                            value="{{task.status_description}}" [(ngModel)]="task.status_description">
+                        </div>
+                      </div>
+                    </ng-form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                    (click)="editModal.hide()" mdbWavesEffect>Vazgeç</button>
+                  <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                    (click)="updateTask(task)"
+                    (click)="editModal.hide()"
+                    [ngClass]="{disabled:!editTaskForm.valid}">Kaydet</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Edit Task Modal -->
+
+          <!--Delete Task Modal-->
+          <div mdbModal #deleteModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="myBasicModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Görevi Sil</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="card-header"></div>
+                  <div class="card-body">
+                    <span>
+                      <h5>Görev Silinecektir!</h5>
+                    </span>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                    (click)="deleteModal.hide()" mdbWavesEffect>Vazgeç</button>
+                  <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                    (click)="deleteTask(task.task_key)" (click)="deleteModal.hide()">Onayla</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Delete Task Modal-->
+        </div>
+      </tr>
+    </tbody>
+  </table>
+  <!-- Create Task Modal -->
+  <div mdbModal #createModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="createModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Görev Oluştur</h4>
+        </div>
+        <div class="modal-body">
+          <div class="card-header"></div>
+          <!-- Form inside Modal -->
+          <div class="card-body">
+            <ng-form #createTaskForm="ngForm">
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="header">Başlık</label>
+                  <input type="text" required name="header" class="form-control" [(ngModel)]="tempTask.header">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="description">Açıklama</label>
+                  <textarea name="description" required class="form-control" cols="30" rows="10"
+                    [(ngModel)]="tempTask.description"></textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="btn-group" mdbDropdown>
+                    <form>
+                      <div class="input-group no-border">
+                        <input type="text" value="" class="form-control" name="assignedBy"
+                          placeholder="Görevi Oluşturan" [(ngModel)]="searchUsers1" [ngModelOptions]="{standalone:true}"
+                          [(ngModel)]="tempTask.assignedBy_name">
+                        <div class="input-group-append">
+                          <div class="input-group-text">
+                            <a mdbDropdownToggle type="button" color="primary" class=" waves-light"
+                              mdbWavesEffect><i class="now-ui-icons users_single-02"></i></a>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    <div class="dropdown-menu dropdown-dark">
+                      <a class="dropdown-item" *ngFor="let user of users|searchFilter:searchUsers1"
+                        (click)="tempTask.assignedBy_name=user.displayName"
+                        (click)="tempTask.assignedBy=user.key">{{user.displayName}}</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="btn-group" mdbDropdown>
+                    <form>
+                      <div class="input-group no-border">
+                        <input type="text" value="" class="form-control" name="assignedTo" placeholder="Görevin Alıcısı"
+                          [(ngModel)]="searchUsers2" [ngModelOptions]="{standalone:true}"
+                          [(ngModel)]="tempTask.assignedTo_name">
+                        <div class="input-group-append">
+                          <div class="input-group-text">
+                            <a mdbDropdownToggle type="button" color="primary" class=" waves-light"
+                              mdbWavesEffect><i class="now-ui-icons users_single-02"></i></a>
+                          </div>
+                        </div>
+                      </div>
+                    </form>
+                    <div class="dropdown-menu dropdown-dark">
+                      <a class="dropdown-item" *ngFor="let user of users|searchFilter:searchUsers2"
+                        (click)="this.tempTask.assignedTo = user.key"
+                        (click)="this.tempTask.assignedTo_name = user.displayName">{{user.displayName}}</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <label for="createdAt">Oluşturma Zamanı</label>
+                  <input type="datetime-local" required name="createdAt" class="form-control"
+                    [(ngModel)]="tempTask.createdAt">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="btn-group" mdbDropdown>
+                    <a mdbDropdownToggle type="button" class="dropdown-toggle waves-light ">
+                      Durum
+                    </a>
+                    <div class="dropdown-menu dropdown-primary">
+                      <a class="dropdown-item" (click)="tempTask.status='Beklemede'">Beklemede</a>
+                      <a class="dropdown-item" (click)="tempTask.status='Devam Ediyor'">Devam Ediyor</a>
+                      <a class="dropdown-item" (click)="tempTask.status='Kapandı'">Kapandı</a>
+                    </div>
+                  </div>
+                  <input type="text" class="form-control" value="{{tempTask.status}}" disabled>
+                </div>
+                <div class="col-md-4" *ngIf="tempTask.status!='Kapandı'"></div>
+                <div class="col-md-4" *ngIf="tempTask.status=='Kapandı'">
+                  <div class="btn-group" mdbDropdown>
+                    <a mdbDropdownToggle type="button" class="dropdown-toggle waves-light "
+                      *ngIf="tempTask.status=='Kapandı'">
+                      Sonuç
+                    </a>
+                    <div class="dropdown-menu dropdown-primary">
+                      <a class="dropdown-item" (click)="tempTask.result='Başarılı'">Başarılı</a>
+                      <a class="dropdown-item" (click)="tempTask.result='Başarısız'">Başarısız</a>
+                      <a class="dropdown-item" (click)="tempTask.result='İptal'">İptal</a>
+                    </div>
+                  </div>
+                  <input type="text" class="form-control" value="{{tempTask.result}}" disabled>
+                </div>
+                <div class="col-md-4">
+                  <label for="modifiedAt">Değiştirme Zamanı</label>
+                  <input type="datetime-local" required name="modifiedAt" class="form-control"
+                    [(ngModel)]="tempTask.modifiedAt">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"></div>
+                <div class="col-md-4">
+                  <label for="deadline">İstenen Zaman</label>
+                  <input type="datetime-local" required name="deadline" class="form-control"
+                    [(ngModel)]="tempTask.deadline">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <label for="statusDescription">Durum Açıklaması</label>
+                  <textarea name="statusDescription" class="form-control" cols="30" rows="10"
+                    [(ngModel)]="tempTask.status_description"></textarea>
+                </div>
+              </div>
+            </ng-form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+            (click)="createModal.hide()" mdbWavesEffect>Vazgeç</button>
+          <button type="submit" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+            (click)="createModal.hide()" [ngClass]="{disabled: createTaskForm.valid === false}"
+            (click)="createTask()">Kaydet</button>
+        </div>
+      </div>
+    </div>
+    <!-- Create Task Modal -->
+
+
+  </div>

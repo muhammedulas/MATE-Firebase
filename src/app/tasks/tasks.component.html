@@ -1,0 +1,226 @@
+<div class="panel-header" style="height: 25%;">
+  <div class="header text-center">
+    <h2 class="title">Görevlerim</h2>
+  </div>
+</div>
+<div class="main-content" style="height: 60%;">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title" style="text-align: center;">Beklemede Olan Görevler</h4>
+        </div>
+        <div class="card-body overflow-auto scroll scrollbar scrollbar-primary">
+          <div class="alert alert-info" *ngFor="let task of onHoldList|taskSearch:'Beklemede'|taskSearch:search">
+            <div class="row">
+              <div class="col-md-10">
+                <div class="row">
+                  <b>{{task.header}}</b>
+                  <hr width="285">
+                </div>
+                <div class="row">
+                  {{task.description}} <span>
+                    <hr width="285">
+                  </span>
+                </div>
+                <div class="row">
+                  <span><span class="text-dark">{{task.createdAt|date:'dd/MM/yyyy HH:mm'}}</span> - <span
+                      class="text-dark">{{task.deadline|date:'dd/MM/yyyy HH:mm'}}</span></span>
+                </div>
+              </div>
+              <div class="col-md-2">
+                <div class="row"></div>
+                <div class="row">
+                  <button class="btn btn-sm close" aria-hidden="true" (click)="tempTask=task"
+                    (click)="changeStatusInProgress()">
+                    <mdb-icon fas icon="chevron-circle-right"></mdb-icon>
+                  </button>
+                </div>
+                <div class="row"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title" style="text-align:center">Devam Eden Görevler</h4>
+        </div>
+        <div class="card-body overflow-auto scroll scrollbar scrollbar-primary">
+          <div class="alert alert-warning" *ngFor="let task of inProgressList|taskSearch:'Devam Ediyor'|taskSearch:search">
+            <div class="row">
+              <div class="col-md-12">
+                <a (click)="descModal.show()" (click)="tempTask=task" style="float: right;">
+                  <mdb-icon fas icon="align-left"></mdb-icon>
+                </a>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2"></div>
+              <div class="col-md-8">
+                <span style="text-align: left; vertical-align: text-top;"><b>{{task.header}}</b>
+                  <hr />
+                </span>
+              </div>
+              <div class="col-md-2">
+
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+                <button class="btn btn-sm close" aria-hidden="true" (click)="tempTask=task"
+                  (click)="changeStatusOnHold()">
+                  <mdb-icon fas icon="chevron-circle-left"></mdb-icon>
+                </button>
+              </div>
+              <div class="col-md-8">
+                {{task.description}}
+                <hr />
+              </div>
+              <div class="col-md-2">
+                <button class="btn btn-sm close" aria-hidden="true" (click)="tempTask=task" (click)="closeModal.show()">
+                  <mdb-icon fas icon="chevron-circle-right"></mdb-icon>
+                </button>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2"></div>
+              <div class="col-md-8">
+                <span>
+                  İsteniyor: <span class="text-dark"> {{task.deadline|date:'dd/MM/yyyy HH:mm'}}</span></span>
+              </div>
+              <div class="col-md-2"></div>
+            </div>
+            <!--Status Description Modal-->
+            <div mdbModal #descModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+              aria-labelledby="myBasicModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close pull-right" aria-label="Close" (click)="descModal.hide()">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">
+                      Durum Açıklaması Ekle</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                      <span>
+                        <ng-form #descForm="ngForm">
+                          <textarea name="description" class="form-control" required cols="30" rows="10"
+                            [(ngModel)]="tempTask.status_description"></textarea>
+                        </ng-form>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                      (click)="descModal.hide()" mdbWavesEffect>Vazgeç</button>
+                    <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light"
+                      mdbWavesEffect (click)="setStatusDesc()" (click)="descModal.hide()">Onayla</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--Status Description Modal-->
+            <!--Close Task Modal-->
+            <div mdbModal #closeModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+              aria-labelledby="myBasicModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close pull-right" aria-label="Close" (click)="descModal.hide()">
+                      <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">
+                      Görevi Kapat</h4>
+                  </div>
+                  <div class="modal-body">
+                    <div class="card-header"></div>
+                    <div class="card-body">
+                      <span>
+                        <ng-form #closeForm="ngForm">
+                          <div class="row">
+                            <div class="btn-group" mdbDropdown>
+                              <a mdbDropdownToggle type="button" class="dropdown-toggle waves-light ">
+                                Sonuç
+                              </a>
+                              <div class="dropdown-menu dropdown-primary">
+                                <a class="dropdown-item" (click)="tempTask.result='Başarılı'">Başarılı</a>
+                                <a class="dropdown-item" (click)="tempTask.result='Başarısız'">Başarısız</a>
+                                <a class="dropdown-item" (click)="tempTask.result='İptal'">İptal</a>
+                              </div>
+                            </div>
+                            <input type="text" disabled id="" value="{{tempTask.result}}"
+                              class="form-control w-25 ml-2">
+                          </div>
+                          <div class="row">
+                            <label for="description">Durum Güncellemesi</label>
+                            <textarea name="description" required class="form-control" required cols="30" rows="10"
+                              [(ngModel)]="tempTask.status_description"></textarea>
+                          </div>
+                        </ng-form>
+                      </span>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                      (click)="closeModal.hide()" mdbWavesEffect>Vazgeç</button>
+                    <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light"
+                      mdbWavesEffect (click)="setStatusDesc()" (click)="descModal.hide()"
+                      [ngClass]="{disabled:!closeForm.valid,disabled:tempTask.result==''}"
+                      (click)="changeStatusClosed()">Onayla</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--Close Task Modal-->
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h4 class="card-title" style="text-align:center">Sonuçlanan Görevler</h4>
+        </div>
+        <div class="card-body overflow-auto scroll scrollbar scrollbar-primary">
+          <div class="alert"
+            [ngClass]="{'alert-success':task.result=='Başarılı','alert-danger':task.result=='Başarısız','alert-primary':task.result=='İptal'}"
+            *ngFor="let task of closedList|taskSearch:'Kapandı'|taskSearch:search">
+            <div class="row">
+              <div class="col-md-2">
+                <div class="row"></div>
+                <div class="row">
+                  <button class="btn btn-sm close" aria-hidden="true" (click)="tempTask=task"
+                    (click)="changeStatusInProgress()">
+                    <mdb-icon fas icon="chevron-circle-left"></mdb-icon>
+                  </button>
+                </div>
+                <div class="row"></div>
+              </div>
+              <div class="col-md-10">
+                <div class="row">
+                  <span style="text-align: left; vertical-align:text-top"><b>{{task.header}}</b> &nbsp;({{task.result}})
+                    <hr width="275">
+                  </span>
+                </div>
+                <div class="row">
+                  <span>{{task.description}}
+                    <hr width="275">
+                  </span>
+                </div>
+                <div class="row">
+                  <span>
+                    Kapandı: <span class="text-dark">{{task.closed|date:'dd/MM/yyyy HH:mm'}}</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

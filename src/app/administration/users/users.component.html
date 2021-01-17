@@ -1,0 +1,306 @@
+<div class="table mt-1">
+  <div class="row">
+    <div class="col-md-4">
+      <button type="button" mdbBtn color="primary" style="border-radius: 5rem;" class="relative waves-light" size="sm"
+        (click)="createModal.show()" (click)="createUserForm.resetForm()" mdbWavesEffect>Yeni Kullanıcı</button>
+    </div>
+    <div class="col-md-4 mr-5 ">
+      <!--Search Box-->
+      <form>
+        <div class="input-group no-border">
+          <input type="text" value="" class="form-control" placeholder="Kullanıcılar İçinde Ara.."
+            [(ngModel)]="searchBoxValue" [ngModelOptions]="{standalone:true}">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <i class="now-ui-icons ui-1_zoom-bold"></i>
+            </div>
+          </div>
+        </div>
+      </form>
+      <!--Search Box-->
+    </div>
+  </div>
+  <table class="table table-hover ">
+    <thead class="black white-text">
+      <th>Kullanıcı Adı</th>
+      <th>Mail</th>
+      <th>Telefon No</th>
+      <th>Yetki Seviyesi</th>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of usersList | searchFilter:searchBoxValue" (dblclick)="editModal.show()"
+        style="user-select: none; ">
+        <td mdbTooltip="Düzenlemek İçin Çift Tıklayın" placement="top">{{user.displayName}}</td>
+        <td>{{user.mail}}</td>
+        <td>{{user.phone}}</td>
+        <td>{{user.authLevel}}</td>
+        <td hidden id="uid">{{user.uid}}}</td>
+        <td>
+          <!--  <button type="button" mdbBtn color="primary" class="relative waves-light" size="sm" (click)="editModal.show()"
+          mdbWavesEffect><a><i class="now-ui-icons ui-1_settings-gear-63"></i></a></button> -->
+          <a class="btn btn-danger btn-sm" style="border-radius: 50em;" mdbWavesEffect (click)="deleteModal.show()"
+            mdbTooltip="Kullanıcıyı Sil" placement="top">
+            <mdb-icon fas icon="user-times"></mdb-icon>
+          </a>
+          <a class="btn btn-warning btn-sm " style="border-radius: 50em;" mdbWavesEffect
+            mdbTooltip="Şifre Sıfırlama e-postası Gönder" placement="top" (click)="sendPasswordResetMail(user.mail)">
+            <mdb-icon fas icon="lock-open"></mdb-icon>
+          </a>
+        </td>
+        <div>
+          <!-- Edit user Modal -->
+          <div mdbModal #editModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="myBasicModalLabel" aria-hidden="true">
+            <div class="modal-dialog  modal-lg modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="editModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Kullanıcıyı Düzenle</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="card-header"></div>
+                  <!-- Form inside Modal -->
+                  <div class="card-body">
+                    <ng-form #editUserForm="ngForm">
+                      <div class="row">
+                        <div class="col-md-4">
+                          <label for="firstName" class="">Adı</label>
+                          <input type="text" required name="firstName" class="form-control" value="{{user.firstName}}"
+                            [(ngModel)]="user.firstName">
+                        </div>
+                        <div class="col-md-4">
+                          <label for="lastName">Soyadı</label>
+                          <input type="text" required name="lastName" class="form-control" value="{{user.lastName}} "
+                            [(ngModel)]="user.lastName">
+                        </div>
+                        <div class="col-md-4">
+                          <label for="displayName">Görüntülenecek Ad</label>
+                          <input type="text" required name="displayName" class="form-control"
+                            value="{{user.displayName}}" [(ngModel)]="user.displayName">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label for="mail">Mail Adresi</label>
+                          <input type="email" required
+                            pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" name="mail"
+                            class="form-control" value="{{user.mail}}" [(ngModel)]="user.mail">
+                        </div>
+                        <div class="col-md-6">
+                          <label for="phone">Telefon Numarası</label>
+                          <input type="tel" required name="phone" class="form-control" value="{{user.phone}}"
+                            [(ngModel)]="user.phone">
+                        </div>
+
+                      </div>
+                      <div class="row">
+                        <div class="col-md-12">
+                          <span>
+                            <h5>Adres Bilgileri</h5>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-3">
+                          <label for="adress_country">Ülke</label>
+                          <input type="text" required name="adress_country" class="form-control"
+                            value="{{user.adress.country}}" [(ngModel)]="user.adress.country">
+                        </div>
+                        <div class="col-md-3">
+                          <label for="adress_city">Şehir</label>
+                          <input type="text" required name="adress_city" class="form-control"
+                            value="{{user.adress.province}}" [(ngModel)]="user.adress.province">
+                        </div>
+                        <div class="col-md-3">
+                          <label for="adress_district">İlçe</label>
+                          <input type="text" required name="adress_district" class="form-control"
+                            value="{{user.adress.district}}" [(ngModel)]="user.adress.district">
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-md-9">
+                          <label for="adress_openAdress">Adres</label>
+                          <input type="text" required name="adress_openAdress" class="form-control"
+                            value="{{user.adress.openAdress}}" [(ngModel)]="user.adress.openAdress">
+                        </div>
+                        <div class="col-md-3">
+                          <label for="adress_postalCode">Posta Kodu</label>
+                          <input type="number" required name="adress_postalCode" class="form-control"
+                            value="{{user.adress.postalCode}} " [(ngModel)]="user.adress.postalCode">
+                        </div>
+                      </div>
+                    </ng-form>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                    (click)="editModal.hide()" mdbWavesEffect>Vazgeç</button>
+                  <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                    (click)="editModal.hide()" (click)="updateUser(user)"
+                    [ngClass]="{disabled:!editUserForm.valid}">Kaydet</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Edit user Modal -->
+
+          <!--Delete User Modal-->
+          <div mdbModal #deleteModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+            aria-labelledby="myBasicModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close pull-right" aria-label="Close" (click)="deleteModal.hide()">
+                    <span aria-hidden="true">×</span>
+                  </button>
+                  <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Kullanıcıyı Sil</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="card-header"></div>
+                  <!-- Form inside Modal -->
+                  <div class="card-body">
+                    <span>
+                      <h5><strong>{{user.displayName}}</strong> Kullanıcısı Silinecektir!</h5>
+                    </span>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                    (click)="deleteModal.hide()" mdbWavesEffect>Vazgeç</button>
+                  <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+                    (click)="deleteModal.hide()" (click)="deleteUser(user.key)">Onayla</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--Delete User Modal-->
+        </div>
+      </tr>
+    </tbody>
+  </table>
+  <!-- <button type="button" mdbBtn color="primary" class="relative waves-light" size="sm" (click)="createModal.show()"
+    mdbWavesEffect>Yeni Kullanıcı</button> -->
+  <!-- Create User Modal -->
+  <div mdbModal #createModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+    aria-labelledby="myBasicModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close pull-right" aria-label="Close" (click)="createModal.hide()">
+            <span aria-hidden="true">×</span>
+          </button>
+          <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Kullanıcı Ekle</h4>
+        </div>
+        <div class="modal-body">
+          <div class="card-header"></div>
+          <!-- Form inside Modal -->
+          <div class="card-body">
+            <ng-form #createUserForm="ngForm">
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="firstName" class="">Adı</label>
+                  <input type="text" required name="firstName" class="form-control" [(ngModel)]="tempUser.firstName ">
+                </div>
+                <div class="col-md-4">
+                  <label for="lastName">Soyadı</label>
+                  <input type="text" required name="lastName" class="form-control" [(ngModel)]="tempUser.lastName">
+                </div>
+                <div class="col-md-4">
+                  <label for="displayName">Görüntülenecek Ad</label>
+                  <input type="text" required name="displayName" class="form-control"
+                    [(ngModel)]="tempUser.displayName">
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-4">
+                  <label for="mail">Mail Adresi</label>
+                  <input type="email" required pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$"
+                    name="mail" class="form-control" [(ngModel)]="tempUser.mail">
+                </div>
+                <div class="col-md-4">
+                  <label for="password">Parola</label>
+                  <input type="password" required name="password" class="form-control" [(ngModel)]="tempUser.password">
+                </div>
+                <div class="col-md-4">
+                  <label for="phone">Telefon Numarası</label>
+                  <input type="tel" required name="phone" class="form-control" [(ngModel)]="tempUser.phone">
+                </div>
+              </div>
+              <!--Auth Level Radio-->
+              <div class="row" id="authLevelArea">
+                <span class="ml-3">Yetki Seviyesi</span>
+                <div class="col-md-12">
+                  <!-- Admin -->
+                  <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" id="adminRadio" required name="adminRadio" mdbInput
+                      [(ngModel)]="tempUser.authLevel" value="admin">
+                    <label class="custom-control-label" for="adminRadio">Yönetici</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <!-- User-->
+                  <div class="custom-control custom-radio">
+                    <input type="radio" class="custom-control-input" id="userRadio" required name="userRadio" checked
+                      mdbInput [(ngModel)]="tempUser.authLevel" value="user">
+                    <label class="custom-control-label" for="userRadio">Kullanıcı</label>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <span>
+                    <h5>Adres Bilgileri</h5>
+                  </span>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <label for="adress_country">Ülke</label>
+                  <input type="text" required name="adress_country" class="form-control"
+                    [(ngModel)]="tempUser.adress.country">
+                </div>
+                <div class="col-md-3">
+                  <label for="adress_city">Şehir</label>
+                  <input type="text" required name="adress_city" class="form-control"
+                    [(ngModel)]="tempUser.adress.province">
+                </div>
+                <div class="col-md-3">
+                  <label for="adress_district">İlçe</label>
+                  <input type="text" required name="adress_district" class="form-control"
+                    [(ngModel)]="tempUser.adress.district">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-9">
+                  <label for="adress_openAdress">Adres</label>
+                  <input type="text" required name="adress_openAdress" class="form-control"
+                    [(ngModel)]="tempUser.adress.openAdress">
+                </div>
+                <div class="col-md-3">
+                  <label for="adress_postalCode">Posta Kodu</label>
+                  <input type="number" required name="adress_postalCode" class="form-control"
+                    [(ngModel)]="tempUser.adress.postalCode">
+                </div>
+              </div>
+            </ng-form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+            (click)="createModal.hide()" mdbWavesEffect>Vazgeç</button>
+          <button type="submit" mdbBtn color="primary" class="relative waves-light" mdbWavesEffect
+            (click)="createUser(tempUser) " (click)="createModal.hide()" (click)="resetTemp()"
+            [ngClass]="{disabled: createUserForm.valid === false}">Kaydet</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Create User Modal -->
+
+
+</div>

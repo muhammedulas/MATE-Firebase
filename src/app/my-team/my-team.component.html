@@ -1,0 +1,281 @@
+<div class="panel-header" style="height: 25%;">
+  <div class="header text-center">
+    <h2 class="title">Ekibim</h2>
+  </div>
+</div>
+<div class="main-content" style="height: 60%;" *ngIf="isManager()">
+  <div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="car-title mb-3" style="text-align: center;">{{teamName}}</h3>
+        </div>
+        <div class="card-body">
+          <h4 style="text-align: center;">Ekip Üyeleri</h4>
+          <table class="table table-hover ">
+            <thead>
+              <th>Adı</th>
+              <th>Mail Adresi</th>
+              <th>Telefon Numarası</th>
+              <th>Rolü</th>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of membersList|filterByTeam:teamKey" style="user-select: none;">
+                <td (dblclick)="userInfoModal.show()">{{user.displayName}}</td>
+                <td (dblclick)="userInfoModal.show()">{{user.mail}}</td>
+                <td (dblclick)="userInfoModal.show()">{{user.phone}}</td>
+                <td (dblclick)="userInfoModal.show()">{{user.role}}</td>
+                <td>
+                  <a class="btn btn-sm btn-success mr-1" mdbTooltip="Görev Ver" placement="top"
+                    (click)="createModal.show()" *ngIf="userKey!=user.key">
+                    <mdb-icon fas icon="tasks"></mdb-icon>
+                  </a>
+                  <a class="btn btn-sm btn-info" mdbTooltip="Görev Takibi" placement="top"
+                    (click)="taskTraceModal.show()" *ngIf="userKey!=user.key">
+                    <mdb-icon fas icon="tasks"></mdb-icon>
+                  </a>
+                </td>
+                <!-- Edit user Modal -->
+                <div mdbModal #userInfoModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+                  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+                  <div class="modal-dialog  modal-lg modal-notify modal-info" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close pull-right" aria-label="Close"
+                          (click)="userInfoModal.hide()">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">Kullanıcıyı Düzenle
+                        </h4>
+                      </div>
+                      <div class="modal-body">
+                        <div class="card-header"></div>
+                        <!-- Form inside Modal -->
+                        <div class="card-body">
+                          <ng-form #userInfoForm="ngForm">
+                            <div class="row">
+                              <div class="col-md-4">
+                                <label for="firstName" class="">Adı</label>
+                                <input type="text" disabled name="firstName" class="form-control"
+                                  value="{{user.firstName}}" [(ngModel)]="user.firstName">
+                              </div>
+                              <div class="col-md-4">
+                                <label for="lastName">Soyadı</label>
+                                <input type="text" disabled name="lastName" class="form-control"
+                                  value="{{user.lastName}} " [(ngModel)]="user.lastName">
+                              </div>
+                              <div class="col-md-4">
+                                <label for="displayName">Kullanıcı Adı</label>
+                                <input type="text" disabled name="displayName" class="form-control"
+                                  value="{{user.displayName}}">
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label for="mail">Mail Adresi</label>
+                                <input type="email" disabled
+                                  pattern="^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$" name="mail"
+                                  class="form-control" value="{{user.mail}}">
+                              </div>
+                              <div class="col-md-6">
+                                <label for="phone">Telefon Numarası</label>
+                                <input type="tel" disabled name="phone" class="form-control" value="{{user.phone}}"
+                                  [(ngModel)]="user.phone">
+                              </div>
+
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <span>
+                                  <h5>Adres Bilgileri</h5>
+                                </span>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-3">
+                                <label for="adress_country">Ülke</label>
+                                <input type="text" disabled name="adress_country" class="form-control"
+                                  value="{{user.adress.country}}">
+                              </div>
+                              <div class="col-md-3">
+                                <label for="adress_city">Şehir</label>
+                                <input type="text" disabled name="adress_city" class="form-control"
+                                  value="{{user.adress.province}}">
+                              </div>
+                              <div class="col-md-3">
+                                <label for="adress_district">İlçe</label>
+                                <input type="text" disabled name="adress_district" class="form-control"
+                                  value="{{user.adress.district}}">
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-9">
+                                <label for="adress_openAdress">Adres</label>
+                                <input type="text" disabled name="adress_openAdress" class="form-control"
+                                  value="{{user.adress.openAdress}}">
+                              </div>
+                              <div class="col-md-3">
+                                <label for="adress_postalCode">Posta Kodu</label>
+                                <input type="text" name="adress_postalCode" class="form-control" disabled
+                                  value="{{user.adress.postalCode}}">
+                              </div>
+                            </div>
+                          </ng-form>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                          (click)="userInfoModal.hide()" mdbWavesEffect>Tamam</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- Edit user Modal -->
+                <!--Task Tracing Modal-->
+                <div mdbModal #taskTraceModal="mdb-modal" class="modal fade" tabindex="-1" role="dialog"
+                  aria-labelledby="taskTraceModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-xl modal-notify modal-info">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close pull-right" aria-label="Close"
+                          (click)="taskTraceModal.hide()">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">{{user.displayName}}
+                          Kullanıcısının Görevleri</h4>
+                      </div>
+                      <div class="modal-body" style="max-height: 550px; overflow-y: scroll;">
+                        <div class="card-header"></div>
+                        <div class="card-body">
+                          <table class="table table-hover">
+                            <thead>
+                              <th>Başlık</th>
+                              <th>Açıklama</th>
+                              <th>Oluşturan</th>
+                              <th>Oluşturma Tarihi</th>
+                              <th>İstenen Tarih</th>
+                              <th>Durumu</th>
+                              <th>Sonuç</th>
+                            </thead>
+                            <tbody>
+                              <tr class="tableRow" *ngFor="let task of taskList|taskSearch:user.displayName">
+                                <td>{{task.header}}</td>
+                                <td class="tableCol" mdbTooltip="{{task.description}}" placement="top">
+                                  {{task.description}}</td>
+                                <td>{{task.assignedBy_name}}</td>
+                                <td>{{task.createdAt|date:'dd/mm/yyyy hh:mm'}}</td>
+                                <td>{{task.deadline|date:'dd/mm/yyyy hh:mm'}}</td>
+                                <td mdbTooltip="{{task.status_description}}" placement="top">{{task.status}}</td>
+                                <td>{{task.result}}</td>
+                                <td>
+                                  <a class="btn btn-sm btn-danger" style="border-radius: 50em;" (click)="deleteModal.show()">
+                                    <mdb-icon fas icon="times"></mdb-icon>
+                                  </a>
+                                </td>
+                                <!--Delete Task Modal-->
+                                <div mdbModal #deleteModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+                                  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+                                  <div class="modal-dialog modal-lg modal-notify modal-info" role="document">
+                                    <div class="modal-content">
+                                      <div class="modal-header">
+                                        <button type="button" class="close pull-right" aria-label="Close"
+                                          (click)="deleteModal.hide()">
+                                          <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">
+                                          Görevi Sil</h4>
+                                      </div>
+                                      <div class="modal-body">
+                                        <div class="card-header"></div>
+                                        <div class="card-body">
+                                          <span>
+                                            <h5>Görev Silinecektir!</h5>
+                                          </span>
+                                        </div>
+                                      </div>
+                                      <div class="modal-footer">
+                                        <button type="button" mdbBtn color="secondary" class="waves-light"
+                                          aria-label="Close" (click)="deleteModal.hide()" mdbWavesEffect>Vazgeç</button>
+                                        <button type="button" type="reset" mdbBtn color="primary"
+                                          class="relative waves-light" mdbWavesEffect
+                                          (click)="deleteTask(task.task_key)"
+                                          (click)="deleteModal.hide()">Onayla</button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                                <!--Delete Task Modal-->
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                          (click)="taskTraceModal.hide()" mdbWavesEffect>Tamam</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--Task Tracing Modal-->
+                <!--Create Task Modal-->
+                <div mdbModal #createModal="mdbModal" class="modal fade" tabindex="-1" role="dialog"
+                  aria-labelledby="myBasicModalLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-md modal-notify modal-info" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close pull-right" aria-label="Close" (click)="createModal.hide()">
+                          <span aria-hidden="true">×</span>
+                        </button>
+                        <h4 class="modal-title w-100" style="text-align: center;" id="myModalLabel">{{user.displayName}}
+                          Kullanıcısına Görev Ver</h4>
+                      </div>
+                      <div class="modal-body">
+                        <div class="card-header"></div>
+                        <div class="card-body">
+                          <form #createTaskForm="ngForm">
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label for="header">Başlık</label>
+                                <input type="text" name="header" required class="form-control"
+                                  [(ngModel)]="tempTask.header">
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md 12">
+                                <label for="description">Açıklama</label>
+                                <textarea name="description" required class="form-control" cols="30" rows="10"
+                                  [(ngModel)]="tempTask.description"></textarea>
+                              </div>
+                            </div>
+                            <div class="row">
+                              <div class="col-md-12">
+                                <label for="deadline">İstenen Tarih</label>
+                                <input type="datetime-local" name="deadline" required class="form-control"
+                                  [(ngModel)]="tempTask.deadline">
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" mdbBtn color="secondary" class="waves-light" aria-label="Close"
+                          (click)="createModal.hide()" mdbWavesEffect>Vazgeç</button>
+                        <button type="button" type="reset" mdbBtn color="primary" class="relative waves-light"
+                          (click)="assign(user)" mdbWavesEffect (click)="createTask()" (click)="createModal.hide()"
+                          [ngClass]="{disabled:!createTaskForm.valid}">Onayla</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--Create Task Modal-->
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-1"></div>
+  </div>
+</div>

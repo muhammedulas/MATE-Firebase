@@ -1,0 +1,56 @@
+<div class="logo">
+    <a routerLink="" class="simple-text logo-mini">
+        <div class="logo-img">
+            <img src="./assets/img/angular2-logo-white.png" />
+        </div>
+    </a>
+    <a href="#" class="simple-text logo-normal">
+        Team Manager
+    </a>
+</div>
+<div class="sidebar-wrapper">
+    <ul class="nav">
+        <!-- <li routerLinkActive="active" *ngFor="let menuItem of menuItems" class="{{menuItem.class}} nav-item">
+            <a [routerLink]="[menuItem.path]">
+                <i class="now-ui-icons {{menuItem.icon}}"></i>
+                <p>{{menuItem.title}}</p>
+            </a>
+        </li> -->
+        <li routerLinkActive="active" class="nav-item">
+            <a [routerLink]="['/dashboard']">
+                <i class="now-ui-icons design_app"></i>
+                <p>Genel Bakış</p>
+            </a>
+        </li>
+        <li routerLinkActive="active" class="nav-item">
+            <a [routerLink]="['/tasks']">
+                <i class="now-ui-icons ui-1_check"></i>
+                <p>Görevler</p>
+            </a>
+        </li>
+        <li routerLinkActive="active"class="nav-item" *ngIf="isManager()">
+            <a [routerLink]="['/my-team']">
+                <i class="now-ui-icons users_single-02"></i>
+                <p>Ekibim</p>
+            </a>
+        </li>
+        <li routerLinkActive="active"class="nav-item">
+            <a [routerLink]="['/user-profile']">
+                <i class="now-ui-icons business_badge"></i>
+                <p>Profil</p>
+            </a>
+        </li>
+        <li routerLinkActive="active"class="nav-item">
+            <a [routerLink]="['/company-info']">
+                <i class="now-ui-icons business_bank"></i>
+                <p>Kuruluş Bilgileri</p>
+            </a>
+        </li>
+        <li routerLinkActive="active" class="active active-pro nav-item" *ngIf="userIsAdmin()">
+            <a [routerLink]="['/administration/users']">
+                <i class="now-ui-icons loader_gear"></i>
+                <p>Yönetici Paneli</p>
+            </a>
+        </li>
+    </ul>
+</div>
